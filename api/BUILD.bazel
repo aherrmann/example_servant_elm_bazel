@@ -1,0 +1,43 @@
+load(
+    "@rules_haskell//haskell:defs.bzl",
+    "haskell_binary",
+    "haskell_library",
+)
+
+haskell_library(
+    name = "models",
+    srcs = ["Models.hs"],
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "@stackage//:aeson",
+        "@stackage//:aeson-casing",
+        "@stackage//:base",
+        "@stackage//:servant",
+        "@stackage//:servant-elm",
+        "@stackage//:text",
+    ],
+)
+
+haskell_library(
+    name = "api",
+    srcs = ["Api.hs"],
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        ":models",
+        "@stackage//:base",
+        "@stackage//:servant",
+    ],
+)
+
+haskell_binary(
+    name = "generate-elm",
+    srcs = ["GenerateElm.hs"],
+    main_function = "GenerateElm.main",
+    visibility = ["//frontend:__subpackages__"],
+    deps = [
+        ":api",
+        ":models",
+        "@stackage//:base",
+        "@stackage//:servant-elm",
+    ],
+)

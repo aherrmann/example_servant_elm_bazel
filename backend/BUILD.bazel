@@ -1,0 +1,84 @@
+load(
+    "@rules_haskell//haskell:defs.bzl",
+    "haskell_binary",
+    "haskell_library",
+    "haskell_repl",
+    "haskell_test",
+)
+
+haskell_library(
+    name = "db",
+    srcs = ["Db.hs"],
+    deps = [
+        "//api:models",
+        "@stackage//:base",
+        "@stackage//:containers",
+        "@stackage//:stm",
+    ],
+)
+
+haskell_library(
+    name = "server",
+    srcs = ["Server.hs"],
+    deps = [
+        ":db",
+        "//api",
+        "//api:models",
+        "@stackage//:base",
+        "@stackage//:filepath",
+        "@stackage//:servant",
+        "@stackage//:servant-server",
+        "@stackage//:wai-app-static",
+        "@stackage//:warp",
+    ],
+)
+
+haskell_binary(
+    name = "backend",
+    srcs = ["Main.hs"],
+    args = [
+        "--assets",
+        "$(rootpath //frontend:frontend.tar)",
+    ],
+    compiler_flags = ["-threaded"],
+    data = ["//frontend:frontend.tar"],
+    deps = [
+        ":db",
+        ":server",
+        "@stackage//:base",
+        "@stackage//:filepath",
+        "@stackage//:optparse-applicative",
+        "@stackage//:servant",
+        "@stackage//:servant-server",
+        "@stackage//:tar",
+        "@stackage//:temporary",
+        "@stackage//:wai-logger",
+        "@stackage//:warp",
+    ],
+)
+
+haskell_repl(
+    name = "backend@ghci",
+    collect_data = False,
+    deps = [":backend"],
+)
+
+haskell_test(
+    name = "test",
+    srcs = ["Test.hs"],
+    main_function = "Test.main",
+    deps = [
+        ":db",
+        ":server",
+        "//api",
+        "//api:models",
+        "@stackage//:base",
+        "@stackage//:hspec",
+        "@stackage//:hspec-expectations",
+        "@stackage//:http-client",
+        "@stackage//:servant",
+        "@stackage//:servant-client",
+        "@stackage//:servant-server",
+        "@stackage//:warp",
+    ],
+)

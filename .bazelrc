@@ -1,0 +1,13 @@
+build:ci --verbose_failures
+build:ci --color=no
+
+# Do not use a distinct configuration for "host", that is, binaries used at
+# build time should be the same as release binaries. Otherwise, we would build
+# a lot of Stackage dependencies and some targets twice because of the Elm code
+# generation.
+build --distinct_host_configuration=false
+
+build --test_env=LANG=C.utf8
+build --test_output=errors
+
+try-import .bazelrc.local

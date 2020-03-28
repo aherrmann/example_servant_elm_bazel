@@ -1,0 +1,64 @@
+load("@com_github_edschouten_rules_elm//elm:def.bzl", "elm_binary", "elm_library")
+load("@npm//elm-format:index.bzl", "elm_format", "elm_format_test")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+genrule(
+    name = "api-src",
+    srcs = [],
+    outs = ["Api.elm"],
+    cmd = "$(execpath //api:generate-elm) $$(dirname $(OUTS))",
+    tools = ["//api:generate-elm"],
+)
+
+elm_library(
+    name = "api",
+    srcs = ["api-src"],
+    strip_import_prefix = "frontend",
+    deps = [
+        "@elm_package_bartavelle_json_helpers",
+        "@elm_package_elm_http",
+    ],
+)
+
+elm_binary(
+    name = "main",
+    main = "Main.elm",
+    deps = [
+        ":api",
+        "@elm_package_elm_browser",
+        "@elm_package_elm_core",
+        "@elm_package_lattyware_fontawesome",
+    ],
+)
+
+# Execute to auto-format all Elm sources.
+# $ bazel run //frontend:format
+elm_format(
+    name = "format",
+    args = ["--yes"],
+    data = glob(["**/*.elm"]),
+    templated_args = ["$(rootpath %s)" % elm for elm in glob(["**/*.elm"])],
+)
+
+# Execute to test for correct Elm formatting.
+# $ bazel test //frontend:format-test
+elm_format_test(
+    name = "format-test",
+    args = ["--validate"],
+    data = glob(["**/*.elm"]),
+    templated_args = ["$(rootpath %s)" % elm for elm in glob(["**/*.elm"])],
+)
+
+pkg_tar(
+    name = "frontend",
+    srcs = [
+        ":index.html",
+        ":main",
+    ],
+    extension = "tar",
+    files = {
+        "@npm//:node_modules/@fortawesome/fontawesome-free/css/svg-with-js.min.css": "css/fontawesome.min.css",
+    },
+    package_dir = "frontend",
+    visibility = ["//backend:__subpackages__"],
+)
