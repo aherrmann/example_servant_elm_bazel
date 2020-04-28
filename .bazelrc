@@ -1,5 +1,7 @@
 build:ci --verbose_failures
 build:ci --color=no
+build:ci --disk_cache=.cache/disk
+build:ci --repository_cache=.cache/repo
 
 # Do not use a distinct configuration for "host", that is, binaries used at
 # build time should be the same as release binaries. Otherwise, we would build
