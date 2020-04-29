@@ -47,8 +47,19 @@ jobs:
 
     - name: Test
       run: |
-        "${GITHUB_WORKSPACE}/bin/bazel" test //...
+        "${GITHUB_WORKSPACE}/bin/bazel" test //... \
+          --execution_log_json_file=test_log_execution.json \
+          --experimental_workspace_rules_log_file=test_log_workspace.pb
 
     - name: Build
       run: |
         "${GITHUB_WORKSPACE}/bin/bazel" build //...
+
+    - name: Bundle Bazel Logs
+      run: |
+        tar czf test_logs_${{ matrix.os }}.tgz test_log_execution.json test_log_workspace.pb
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: bazel-logs-${{ matrix.os }}
+        path: test_logs_${{ matrix.os }}.tgz
