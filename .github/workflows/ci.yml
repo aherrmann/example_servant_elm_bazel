@@ -21,6 +21,14 @@ jobs:
         restore-keys: |
           bazel-
 
+    - name: Mount stack Cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.stack
+        key: stack-${{ hashFiles('WORKSPACE') }}
+        restore-keys: |
+          stack-
+
     - name: Configure Bazel
       run: |
         cat >.bazelrc.local <<EOF
