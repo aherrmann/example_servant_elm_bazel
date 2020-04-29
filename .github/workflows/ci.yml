@@ -29,6 +29,14 @@ jobs:
         restore-keys: |
           stack-
 
+    - name: Mount yarn Cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/yarn
+        key: yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          yarn-
+
     - name: Configure Bazel
       run: |
         cat >.bazelrc.local <<EOF
