@@ -1,5 +1,7 @@
 # todo app
 
+![](https://github.com/aherrmann/example_servant_elm_bazel/workflows/CI/badge.svg)
+
 A minimal todo app implemented in [Haskell][haskell] using [Servant][servant]
 on the backend, and in [Elm][elm] on the frontend, built with [Bazel][bazel]
 using [`rules_haskell`][rules_haskell] and [`rules_elm`][rules_elm].
