@@ -8,7 +8,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-10.15]
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      BAZEL_USE_CPP_ONLY_TOOLCHAIN: 1
 
     steps:
     - uses: actions/checkout@v2
@@ -17,9 +24,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: .cache
-        key: bazel-${{ github.sha }}
+        key: bazel-${{ matrix.os }}-${{ github.sha }}
         restore-keys: |
-          bazel-
+          bazel-${{ matrix.os }}
 
     - name: Configure Bazel
       run: |
@@ -30,7 +37,11 @@ jobs:
     - name: Install bazelisk
       run: |
         mkdir -p "${GITHUB_WORKSPACE}/bin"
-        curl -L "https://github.com/bazelbuild/bazelisk/releases/download/v1.4.0/bazelisk-linux-amd64" -o "${GITHUB_WORKSPACE}/bin/bazel"
+        if [[ ${{ matrix.os }} = macos* ]]; then
+          curl -L "https://github.com/bazelbuild/bazelisk/releases/download/v1.4.0/bazelisk-darwin-amd64" -o "${GITHUB_WORKSPACE}/bin/bazel"
+        else
+          curl -L "https://github.com/bazelbuild/bazelisk/releases/download/v1.4.0/bazelisk-linux-amd64" -o "${GITHUB_WORKSPACE}/bin/bazel"
+        fi
         chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
         "${GITHUB_WORKSPACE}/bin/bazel" version
 
