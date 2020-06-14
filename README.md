@@ -31,7 +31,7 @@ export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
 Execute the following command to build and start the app:
 
 ```
-$ bazel run //:backend
+$ bazel run //backend
 ```
 
 Then browse to `http://localhost:8080` to use the app.
