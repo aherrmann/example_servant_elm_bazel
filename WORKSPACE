@@ -9,9 +9,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_haskell",
-    sha256 = "e258692e7e4266c71ad8ef77c8179a8dba179f0854121008827189764f571625",
-    strip_prefix = "rules_haskell-57081449c34c0a3de429759837f61a0b70a8f3e2",
-    urls = ["https://github.com/tweag/rules_haskell/archive/57081449c34c0a3de429759837f61a0b70a8f3e2.tar.gz"],
+    sha256 = "3acf9f2ac0b0cfdf0e4aa0cdf4f2332c6819d797daa98cbd4dfa563139eb981e",
+    strip_prefix = "rules_haskell-5acb7432a55ff5c203043b9acdc7ab228cacebcf",
+    urls = ["https://github.com/tweag/rules_haskell/archive/5acb7432a55ff5c203043b9acdc7ab228cacebcf.tar.gz"],
 )
 
 load("@rules_haskell//haskell:repositories.bzl", "rules_haskell_dependencies")
@@ -76,12 +76,13 @@ stack_snapshot(
         "warp",
     ],
     snapshot = "lts-14.27",
+    stack_snapshot_json = "//:stackage_snapshot.json",
 )
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "d0c4bb8b902c1658f42eb5563809c70a06e46015d64057d25560b0eb4bdc9007",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/1.5.0/rules_nodejs-1.5.0.tar.gz"],
+    sha256 = "4a5d654a4ccd4a4c24eca5d319d85a88a650edf119601550c95bf400c8cc897e",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.5.1/rules_nodejs-3.5.1.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
